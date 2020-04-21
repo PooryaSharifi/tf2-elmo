@@ -308,6 +308,7 @@ def build_model():
 
 
 def train(_model, train_data):
+    train_data.on_epoch_end()
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix, save_weights_only=True)
 
     def custom_callback(*args):
@@ -315,7 +316,8 @@ def train(_model, train_data):
         os.system('git add *')
         os.system('git commit -m "new_checkpoint"')
         os.system('git push "https://kafura-kafiri:Po00orya@github.com/kafura-kafiri/elmo_checkpoints.git" --all')
-        print('did it just push')
+        train_data.on_epoch_end()
+        print('just pushed and shuffled')
 
     custom_callback = tf.keras.callbacks.LambdaCallback(on_epoch_end=custom_callback)
     _model.fit_generator(train_data, epochs=parameters['epochs'], callbacks=[checkpoint_callback, custom_callback])
